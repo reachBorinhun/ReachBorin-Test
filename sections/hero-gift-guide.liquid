@@ -59,6 +59,8 @@
 {% endschema %}
 
 <div class="hero-wrapper" style="background-image: url('{{ section.settings.bg_image | image_url }}');">
+    
+    {% comment %} Top bar {% endcomment %}
   <div class="hero-top-bar">
     <div class="hero-box hamburger" onclick="toggleMenu()">☰</div>
 
@@ -66,7 +68,7 @@
       {{ section.settings.logo_text }}
     </div>
 
-    <div class="hero-box desktop-only">
+    <div class="hero-box hero-center-text desktop-only">
       {{ section.settings.center_text }}
     </div>
     <button class="hero-top-btn desktop-only">
@@ -74,10 +76,10 @@
     </button>
 
     <div id="mobile-menu" class="mobile-drawer">
-      <div class="hero-box" style="text-align: center;">
+      <div class="hero-box" style="text-align: center; font-size: 15px; font-weight: normal; text-transform: none;">
         {{ section.settings.center_text }}
       </div>
-      <button class="hero-top-btn" style="width: 100%;">
+      <button class="hero-top-btn">
         {{ section.settings.btn_text }}
       </button>
     </div>
@@ -98,8 +100,8 @@
   </div>
 </div>
 
-{% style %}
-  .hero-wrapper {
+<style>
+    .hero-wrapper {
     position: relative;
     width: 100%;
     min-height: 100vh;
@@ -114,7 +116,7 @@
 
   .hero-top-bar {
     display: flex;
-    background-color: white;
+    background-color: #f5f5f5;
     justify-content: space-between;
     align-items: center;
     width: 100%;
@@ -124,17 +126,21 @@
 
   .hero-box {
     text-transform: uppercase;
-    font-size: 14px;
+    font-size: 30px;
     letter-spacing: 1px;
     color: black;
     font-weight: bold;
     padding: 10px;
   }
+  .hero-box.hero-center-text{
+    font-size: 14px;
+    font-weight: normal;
+  }
 
   .hero-top-btn {
     background-color: #ffeb3b;
     cursor: pointer;
-    padding: 10px 20px;
+    padding: 15px 35px;
     font-weight: bold;
     text-transform: uppercase;
     border:none;
@@ -149,6 +155,7 @@
 
   .mobile-drawer {
     display: none;
+    transition: 0;
   }
 
   .hero-content {
@@ -203,10 +210,14 @@
 
   @media screen and (max-width: 768px) {
     .hero-top-bar {
+      position: relative;
       flex-wrap: wrap;
       padding: 10px;
+      box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
     }
-
+    .hero-top-btn{
+        margin-top: 10px;
+    }
     .desktop-only {
       display: none !important;
     }
@@ -221,6 +232,7 @@
       order: 2;
       flex-grow: 1;
       text-align: center;
+      padding-right: 40px;
     }
 
     .mobile-drawer {
@@ -228,10 +240,13 @@
       order: 3;
       width: 100%;
       flex-direction: column;
-      gap: 10px;
-      padding-top: 10px;
-      background: white;
+      padding: 10px 0 30px 0;
+      background-color: #f5f5f5;
       margin-top: 10px;
+      position: absolute;
+      top: 75px;
+      left: 0;
+      align-items: center;
     }
 
     .mobile-drawer.open {
@@ -240,7 +255,7 @@
 
     .hero-content {
       text-align: center;
-      margin-top: 20px;
+      margin-top: 100px;
       display: flex;
       flex-direction: column;
       align-items: center;
@@ -252,7 +267,7 @@
       text-align: center;
     }
   }
-{% endstyle %}
+</style>
 
 <script>
   function toggleMenu() {
