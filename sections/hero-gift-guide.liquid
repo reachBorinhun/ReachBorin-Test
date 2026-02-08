@@ -1,0 +1,184 @@
+{% schema %}
+{
+  "name": "Hero Gift Guide",
+  "settings": [
+    {
+      "type": "image_picker",
+      "id": "bg_image",
+      "label": "Background Image"
+    },
+    {
+      "type": "text",
+      "id": "logo_text",
+      "label": "Logo Text",
+      "default": "TISSO VISON"
+    },
+    {
+      "type": "text",
+      "id": "center_text",
+      "label": "Center Text",
+      "default": "Find your ideal Gift for your loved one"
+    },
+    {
+      "type": "text",
+      "id": "btn_text",
+      "label": "Top Button Text",
+      "default": "CHOOSE GIFT &rarr;"
+    },
+    {
+      "type": "text",
+      "id": "main_heading",
+      "label": "Top Main Heading",
+      "default": "The Gift Guide"
+    },
+    {
+      "type": "textarea",
+      "id": "description",
+      "label": "Description",
+      "default": "Discover Joy: Your Ultimate Holiday Gift Destination. Explore our curated selection and find the perfect gifts to delight your loved ones this holiday season."
+    },
+    {
+      "type": "text",
+      "id": "shop_btn_text",
+      "label": "Shop Button",
+      "default": "SHOP NOW &rarr;"
+    },
+    {
+      "type": "text",
+      "id": "bottom_text",
+      "label": "Bottom Bar Text",
+      "default": "SUSTAINABLE, ETHICALLY MADE CLOTHES IN SIZES XXS TO 6XL"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Hero Gift Guide"
+    }
+  ]
+}
+{% endschema %}
+
+{% comment %} Body code {% endcomment %}
+<div class="hero-wrapper" style="background-image: url('{{section.settings.bg_image |  image_url }}');">
+  {% comment %} top bar {% endcomment %}
+  <div class="hero-top-bar">
+    <div class="hero-box hero-box-logo">
+      {{ section.settings.logo_text }}
+    </div>
+    <div class="hero-box hero-center-text">
+      {{ section.settings.center_text }}
+    </div>
+    <button class="hero-box hero-top-btn">
+      {{ section.settings.btn_text }}
+    </button>
+  </div>
+
+  {% comment %} Hero content {% endcomment %}
+  <div class="hero-content">
+    <h1 class="hero-title">{{ section.settings.main_heading }}</h1>
+    <div class="hero-desc-box">
+      <p>{{ section.settings.description }}</p>
+    </div>
+    <button class="hero-shop-btn">{{ section.settings.shop_btn_text }}</button>
+  </div>
+
+  <div class="hero-bottom-bar">
+    {{ section.settings.bottom_text }}
+  </div>
+</div>
+
+{% comment %} For Style {% endcomment %}
+<style>
+  .hero-wrapper {
+    position: relative;
+    width: 100%;
+    min-height: 100vh;
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    justify-content: space-between;
+  }
+  .hero-top-bar {
+    display: flex;
+    background-color: white;
+    justify-content: space-between;
+    align-items: flex-start;
+    width: 100%;
+    box-sizing: border-box;
+    padding: 8px 16px;
+  }
+  .hero-box {
+    text-transform: uppercase;
+    font-size: 14px;
+    letter-spacing: 1px;
+    color: black;
+    padding: 8px 16px;
+  }
+  .hero-box-logo {
+    font-weight: bold;
+    font-size: 20px;
+  }
+  .hero-center-text {
+    font-size: 12px;
+    padding-top: 12px;
+  }
+  .hero-top-btn {
+    background-color: yellow;
+    cursor: pointer;
+    border: none;
+    width: 207px;
+    height: 44px;
+  }
+
+  /* Main content */
+
+  .hero-content {
+    padding: 0 5%;
+    max-width: 100%;
+    margin-bottom: auto;
+    position: absolute;
+    bottom: 35%;
+  }
+
+  .hero-title {
+    font-size: 4rem;
+    font-weight: 900;
+    color: black;
+    display: inline-block;
+    margin-bottom: 20px;
+    line-height: 1;
+  }
+
+  .hero-desc-box {
+    padding: 20px 0 20px 0;
+    margin-bottom: 20px;
+    font-size: 1.1rem;
+    line-height: 1.5;
+    white-space: normal;
+    max-width: 400px;
+  }
+
+  .hero-shop-btn {
+    background-color: rgb(31, 31, 31);
+    color: white;
+    border: none;
+    padding: 15px 40px;
+    font-size: 1rem;
+    text-transform: uppercase;
+    cursor: pointer;
+    font-weight: bold;
+  }
+
+  /* Bottom bar */
+  .hero-bottom-bar {
+    background-color: white;
+    text-align: center;
+    padding: 12px;
+    text-transform: uppercase;
+    font-size: 14px;
+    width: 100%;
+  }
+</style>
