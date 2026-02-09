@@ -1,0 +1,148 @@
+{% schema %}
+{
+  "name": "Tisso grid card",
+  "settings": [
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "For heading"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "lookbook_image",
+      "name": "Lookbook Image",
+      "settings": [
+        {
+          "type": "image_picker",
+          "id": "image",
+          "label": "Main image"
+        },
+        {
+        "type": "range",
+        "id": "btn_y",
+        "min":0,
+        "max": 100,
+        "step": 1,
+        "unit": "%",
+        "label": "Up & Down",
+        "default": 50
+     }   
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Tisso grid card",
+      "blocks": [
+        {
+          "type": "lookbook_image"
+        },
+        {
+          "type": "lookbook_image"
+        },
+        {
+          "type": "lookbook_image"
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}
+
+{% comment %} Bloock code {% endcomment %}
+
+<div class="wild-section">
+  <h2 class="wild-heading">
+    {{ section.settings.heading }}
+  </h2>
+
+  <div class="wild-grid">
+    {% for block in section.blocks %}
+      <div class="wild-card" {{ block.shopify_attributes }}>
+        {% if block.settings.image %}
+          {{ block.settings.image | image_url: width: 600 | image_tag: class: 'wild-img', loading: 'lazy' }}
+        {% else %}
+          {{ 'image' | placeholder_svg_tag: 'wild-img' }}
+        {% endif %}
+
+        <button class="plus-btn">
+          <svg class="plus-icon" style="top: {{block.settings.btn_y}}%;" viewBox="0 0 14 14">
+            <path d="M14 8H8V14H6V8H0V6H6V0H8V6H14V8Z" />
+          </svg>
+        </button>
+      </div>
+    {% endfor %}
+  </div>
+</div>
+
+{% comment %} Style {% endcomment %}
+
+<style>
+  .wild-section {
+    max-width: 1337px;
+    padding: 60px 20px;
+    margin: 0 auto;
+  }
+  .wild-heading {
+    font-size: 36px;
+    font-weight: 400;
+    margin-bottom: 30px;
+    color: black;
+  }
+
+  /* Grid System */
+  .wild-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+  }
+
+  /* for card*/
+  .wild-card {
+    position: relative;
+    width: 100%;
+    background-color: rgb(216, 216, 216);
+    overflow: hidden;
+    aspect-ratio: 1/1;
+  }
+  .wild-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+
+  /* For plus button */
+  .plus-btn {
+    position: absolute;
+    width: 22px;
+    height: 22px;
+    border-radius: 100%;
+    background-color: #f8f8f8e5;
+    border: none;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 99;
+
+  }
+  .plus-icon {
+    width: 8.46px;
+    height: 8.46px;
+    fill: black;
+  }
+
+  /* Responsive */
+  @media screen and (max-width: 768px) {
+    .wild-heading {
+      text-align: center;
+      font-size: 32px;
+    }
+    .wild-grid {
+      gap: 4px;
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+</style>
