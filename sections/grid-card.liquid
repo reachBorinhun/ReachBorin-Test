@@ -27,7 +27,17 @@
         "unit": "%",
         "label": "Up & Down",
         "default": 50
-     }   
+     },
+     {
+        "type": "range",
+        "id": "btn_x",
+        "min":0,
+        "max": 100,
+        "step": 1,
+        "unit": "%",
+        "label": "Left & Right",
+        "default": 50
+     }    
       ]
     }
   ],
@@ -66,8 +76,8 @@
           {{ 'image' | placeholder_svg_tag: 'wild-img' }}
         {% endif %}
 
-        <button class="plus-btn">
-          <svg class="plus-icon" style="top: {{block.settings.btn_y}}%;" viewBox="0 0 14 14">
+        <button class="plus-btn" style="top: {{block.settings.btn_y}}%; left: {{block.settings.btn_x}}%;">
+          <svg class="plus-icon"  viewBox="0 0 14 14">
             <path d="M14 8H8V14H6V8H0V6H6V0H8V6H14V8Z" />
           </svg>
         </button>
@@ -126,7 +136,6 @@
     align-items: center;
     justify-content: center;
     z-index: 99;
-
   }
   .plus-icon {
     width: 8.46px;
