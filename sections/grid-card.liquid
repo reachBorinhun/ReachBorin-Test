@@ -19,25 +19,30 @@
           "label": "Main image"
         },
         {
-        "type": "range",
-        "id": "btn_y",
-        "min":0,
-        "max": 100,
-        "step": 1,
-        "unit": "%",
-        "label": "Up & Down",
-        "default": 50
-     },
-     {
-        "type": "range",
-        "id": "btn_x",
-        "min":0,
-        "max": 100,
-        "step": 1,
-        "unit": "%",
-        "label": "Left & Right",
-        "default": 50
-     }    
+          "type": "range",
+          "id": "btn_y",
+          "min": 0,
+          "max": 100,
+          "step": 1,
+          "unit": "%",
+          "label": "Up & Down",
+          "default": 50
+        },
+        {
+          "type": "range",
+          "id": "btn_x",
+          "min": 0,
+          "max": 100,
+          "step": 1,
+          "unit": "%",
+          "label": "Left & Right",
+          "default": 50
+        },
+        {
+          "type": "product",
+          "id": "product_ref",
+          "label": "Select Product"
+        }
       ]
     }
   ],
@@ -69,7 +74,6 @@
 
   <div class="wild-grid">
     {% for block in section.blocks %}
-
       <div class="wild-card" {{ block.shopify_attributes }}>
         {% if block.settings.image %}
           {{ block.settings.image | image_url: width: 600 | image_tag: class: 'wild-img', loading: 'lazy' }}
@@ -77,20 +81,71 @@
           {{ 'image' | placeholder_svg_tag: 'wild-img' }}
         {% endif %}
 
-        <button class="plus-btn" onclick="toggleModal('modal-{{ block.id }}')" style="top: {{block.settings.btn_y}}%; left: {{block.settings.btn_x}}%;">
-          <svg class="plus-icon"  viewBox="0 0 14 14">
+        <button
+          class="plus-btn"
+          onclick="toggleModal('modal-{{ block.id }}')"
+          style="top: {{block.settings.btn_y}}%; left: {{block.settings.btn_x}}%;"
+        >
+          <svg class="plus-icon" viewBox="0 0 14 14">
             <path d="M14 8H8V14H6V8H0V6H6V0H8V6H14V8Z" />
           </svg>
         </button>
 
         {% comment %} For modal {% endcomment %}
         <div id="modal-{{ block.id }}" class="modal-overlay">
-            <div class="modal-box">
-                <span class="close-icon" onclick="toggleModal('modal-{{ block.id }}')">close</span>
-                <h1>Hi Im work</h1>
-            </div>
-        </div>
+          <div class="modal-box">
+            <span class="close-icon" onclick="toggleModal('modal-{{ block.id }}')">&times;</span>
 
+            {% comment %} data from product {% endcomment %}
+            {% assign product = block.settings.product_ref %}
+            {% if product != blank %}
+              <div class="modal-left">
+                {{ product.featured_image | image_url: width: 600 | image_tag: class: 'modal-img' }}
+              </div>
+
+              <div class="modal-right">
+                <h3 class="modal-title">{{ product.title }}</h3>
+                <div class="modal-price">
+                  {{ product.price | money }}
+                </div>
+                <div class="modal-desc">
+                  {{ product.description | strip_html | truncate: 15 }}
+                </div>
+                {% form 'product', product %}
+                  <input type="hidden" name="id" value="{{ product.selected_or_first_available_variant.id }}">
+                  {% assign color_option = product.options_with_values | where: 'name', 'Color' | first %}
+                  {% if color_option %}
+                    <label class="color-label">Color</label>
+                    <div class="color-grid">
+                      {% for value in color_option.values %}
+                        <div class="color_option {% if forloop.first %}Selected{% endif %}">
+                          {{ value }}
+                        </div>
+                      {% endfor %}
+                    </div>
+                  {% endif %}
+
+                  {% assign size_option = product.options_with_value | where: 'name', 'Size' | first %}
+                  {% if size_option %}
+                    <div style="margin-top: 15px;">
+                      <label class="color-label">Size</label>
+                      <select class="size-select">
+                        <option disabled selected>Choose your size</option>
+                        {% for value in size_option.values %}
+                          <option>{{ value }}</option>
+                        {% endfor %}
+                      </select>
+                    </div>
+                  {% endif %}
+
+                  <button class="atc-btn" type="submit">
+                  Add to cart
+                  </button>
+                {% endform %}
+              </div>
+            {% endif %}
+          </div>
+        </div>
       </div>
     {% endfor %}
   </div>
@@ -153,30 +208,96 @@
     fill: black;
   }
   /* For modal product */
-  .modal-overlay{
+  .modal-overlay {
     display: none;
     position: fixed;
-    width: 311px;
-    height: 447px;
     top: 0;
     left: 0;
     width: 100%;
     height: 100%;
-    background-color: black;
+    background-color: rgba(0, 0, 0, 0.4);
     z-index: 999;
     justify-content: center;
     align-items: center;
   }
-  .modal-product.active{
+  .modal-overlay.active {
     display: flex;
   }
-  .modal-box{
+  .modal-box {
     background-color: white;
     padding: 40px;
-    width: 300px;
-    height: 200px;
+    width: 500px;
+    height: 647px;
     position: relative;
     text-align: center;
+    box-shadow: rgba(149, 157, 165, 0.2) 0px 8px 24px;
+    padding: 0;
+    text-align: left;
+  }
+  .modal-left{
+    flex: 1;
+    background-color: gray;
+  }
+  .modal-right{
+    flex: 1;
+    padding: 40px;
+    display: flex;
+    flex-direction: column;
+  }
+  .modal-img-full{
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+  .modal-title{
+    font-size: 16px;
+    margin: 0;
+  }
+  .modal-price{
+    font-size: 16px;
+    font-weight: bold;
+    margin-bottom: 5px;
+  }
+  .modal-desc{
+    font-size: 14px;
+    line-height: 1.5;
+  }
+  .color-label{
+    display: block;
+    font-weight: 400;
+    margin-bottom: 8px;
+    font-size: 14px;
+  }
+  .color-grid{
+    display: flex;
+    gap: 0;
+    border: 1px solid #ccc;
+    width: 100%;
+  }
+  .color-option{
+    flex: 1;
+    padding: 12px;
+    text-align: center;
+    cursor: pointer;
+    border-left: 1px solid #ccc;
+    font-size: 16px;
+    position: relative;
+  }
+  .color-option:last-child{
+    border-left: none;
+  }
+  .color-option.selected{
+    border-right: 5px solid #0044cc;
+    background: white;
+    font-weight: bold;
+  }
+  .close-icon {
+    position: absolute;
+    top: 10px;
+    left: 85%;
+    font-size: 28px;
+    cursor: pointer;
   }
   /* Responsive */
   @media screen and (max-width: 768px) {
@@ -192,18 +313,18 @@
 </style>
 
 {% comment %} Functionf for modal {% endcomment %}
- <script>
-    function toggleModal(modalId){
-        var modal = document.getElementById(modalId);
-        if(modal){
-            modal.classList.toggle("active");
-            console.log("Hi im work")
-        }
+<script>
+  function toggleModal(modalId) {
+    var modal = document.getElementById(modalId);
+    if (modal) {
+      modal.classList.toggle('active');
+      console.log('working on dialog');
     }
- </script>
+  }
+</script>
 
- {% comment %} What to fix when continue
-  
- -  make sure the dialog is for each product 
- 
- {% endcomment %}
+{% comment %}
+  What to fix when continue
+
+  -  make sure the dialog is for each product
+{% endcomment %}
