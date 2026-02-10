@@ -1,0 +1,452 @@
+{% schema %}
+{
+  "name": "Tisso grid card",
+  "settings": [
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "For heading"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "lookbook_image",
+      "name": "Lookbook Image",
+      "settings": [
+        {
+          "type": "image_picker",
+          "id": "image",
+          "label": "Main image"
+        },
+        {
+          "type": "range",
+          "id": "btn_y",
+          "min": 0,
+          "max": 100,
+          "step": 1,
+          "unit": "%",
+          "label": "Up & Down",
+          "default": 50
+        },
+        {
+          "type": "range",
+          "id": "btn_x",
+          "min": 0,
+          "max": 100,
+          "step": 1,
+          "unit": "%",
+          "label": "Left & Right",
+          "default": 50
+        },
+        {
+          "type": "product",
+          "id": "product_ref",
+          "label": "Select Product"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Tisso grid card",
+      "blocks": [
+        {
+          "type": "lookbook_image"
+        },
+        {
+          "type": "lookbook_image"
+        },
+        {
+          "type": "lookbook_image"
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}
+
+{% comment %} Bloock code {% endcomment %}
+
+<div class="wild-section">
+  <h2 class="wild-heading">
+    {{ section.settings.heading }}
+  </h2>
+
+  <div class="wild-grid">
+    {% for block in section.blocks %}
+      <div class="wild-card" {{ block.shopify_attributes }}>
+        {% if block.settings.image %}
+          {{ block.settings.image | image_url: width: 600 | image_tag: class: 'wild-img', loading: 'lazy' }}
+        {% else %}
+          {{ 'image' | placeholder_svg_tag: 'wild-img' }}
+        {% endif %}
+
+        <button
+          class="plus-btn"
+          onclick="toggleModal('modal-{{ block.id }}')"
+          style="top: {{block.settings.btn_y}}%; left: {{block.settings.btn_x}}%;"
+        >
+          <svg class="plus-icon" viewBox="0 0 14 14">
+            <path d="M14 8H8V14H6V8H0V6H6V0H8V6H14V8Z" />
+          </svg>
+        </button>
+
+        {% comment %} For modal {% endcomment %}
+        <div id="modal-{{ block.id }}" class="modal-overlay">
+          <div class="modal-card">
+            <span class="close-icon" onclick="toggleModal('modal-{{ block.id }}')">&times;</span>
+
+            {% assign product = block.settings.product_ref %}
+            {% if product != blank %}
+              <div class="card-header">
+                <div class="header-img-container">
+                  {{ product.featured_image | image_url: width: 400 | image_tag: class: 'header-img' }}
+                </div>
+                <div class="header-info">
+                  <h2 class="product-title">{{ product.title }}</h2>
+                  <p class="product-price">{{ product.price | money }}</p>
+                  <div class="product-desc">
+                    {{ product.description | strip_html | truncatewords: 16 }}
+                  </div>
+                </div>
+              </div>
+              {% form 'product', product %}
+                <input type="hidden" name="id" value="{{ product.selected_or_first_available_variant.id }}">
+
+                {% assign color_option = product.options_with_values | where: 'name', 'Color' | first %}
+                {% if color_option %}
+                  <div class="form-group">
+                    <label class="form-label">Color</label>
+                    <div class="custom-border-box flex-row" id="color-group-{{ block.id }}">
+                      {% for value in color_option.values %}
+                        
+                        {% assign border_color = value %}
+                        {% if value == 'White' %}
+                          {% assign border_color = '#e5e5e5' %} 
+                        {% endif %}
+
+                        <div class="option-btn {% if forloop.first %}active{% endif %}" 
+                             onclick="selectColor(this)"
+                             style="border-left: 5px solid {{ border_color }};">
+                          {{ value }}
+                        </div>
+                      {% endfor %}
+                    </div>
+                    <input type="hidden" name="options[Color]" class="hidden-color-input" value="{{ color_option.selected_value }}">
+                  </div>
+                {% endif %}
+
+                {% assign size_option = product.options_with_values | where: 'name', 'Size' | first %}
+                {% if size_option %}
+                  <div class="form-group">
+                    <label class="form-label">Size</label>
+                    <div class="custom-dropdown" id="dropdown-{{ block.id }}">
+                      
+                      <div class="dropdown-trigger" onclick="toggleDropdown('dropdown-{{ block.id }}')">
+                        <span class="selected-text">Choose your size</span>
+                        <div class="trigger-icon-box">
+                          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                            <path d="M6 9L12 15L18 9" stroke-linecap="square" stroke-linejoin="round"/>
+                          </svg>
+                        </div>
+                      </div>
+
+                      <div class="dropdown-options">
+                        {% for value in size_option.values %}
+                          <div class="dropdown-item" onclick="selectSize('dropdown-{{ block.id }}', '{{ value }}')">
+                            {{ value }}
+                          </div>
+                        {% endfor %}
+                      </div>
+
+                      <select name="options[Size]" class="hidden-real-select" style="display:none;">
+                        {% for value in size_option.values %}
+                          <option value="{{ value }}">{{ value }}</option>
+                        {% endfor %}
+                      </select>
+                    </div>
+                  </div>
+                {% endif %}
+
+                <button class="atc-btn" type="submit">
+                  <span class="btn-text">ADD TO CART</span>
+                  <svg width="32" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                    <path d="M5 12H19M19 12L12 5M19 12L12 19" stroke-linecap="square" stroke-linejoin="round"/>
+                  </svg>
+                </button>
+
+              {% endform %}
+            {% endif %}
+          </div>
+        </div>
+      </div>
+    {% endfor %}
+  </div>
+</div>
+
+{% comment %} Style {% endcomment %}
+
+<style>
+  .wild-section {
+    max-width: 1337px;
+    padding: 60px 20px;
+    margin: 0 auto;
+  }
+  .wild-heading {
+    font-size: 36px;
+    font-weight: 400;
+    margin-bottom: 30px;
+    color: black;
+  }
+
+  /* Grid System */
+  .wild-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+  }
+
+  /* for card*/
+  .wild-card {
+    position: relative;
+    width: 100%;
+    background-color: rgb(216, 216, 216);
+    overflow: hidden;
+    aspect-ratio: 1/1;
+  }
+  .wild-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+
+  /* For plus button */
+  .plus-btn {
+    position: absolute;
+    width: 22px;
+    height: 22px;
+    border-radius: 100%;
+    background-color: #f8f8f8e5;
+    border: none;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 2;
+  }
+  .plus-icon {
+    width: 8.46px;
+    height: 8.46px;
+    fill: black;
+  }
+  /* For modal product */
+  .modal-overlay {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.4);
+    z-index: 999;
+    justify-content: center;
+    align-items: center;
+  }
+  .modal-overlay.active {
+    display: flex;
+  }
+  .modal-card {
+    background-color: white;
+    padding: 26px;
+    width: 100%;
+    max-width: 400px;
+    height: 630px;
+    position: relative;
+    box-shadow: rgba(149, 157, 165, 0.2) 0px 8px 24px;
+  }
+    .close-icon {
+    position: absolute;
+    top: 10px;
+    left: 88%;
+    font-size: 28px;
+    cursor: pointer;
+  }
+  /* For card */
+  .card-header{
+    display: flex;
+    gap: 12px;
+    margin-bottom: 26px;
+    padding-top: 32px;
+  }
+  .header-img-container{
+    width: 45%;
+    aspect-ratio: 1/1;
+    overflow: hidden;
+  }
+  .header-img{
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  .header-info{
+    width: 55%;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    padding-top: 20px;
+  }
+  .product-title{
+    font-size: 20px;
+    font-weight: 300;
+    margin-top: 10px;
+    margin-bottom: 16px;
+  }
+  .product-price{
+    font-size: 20px;
+    font-weight: bold;
+    margin-bottom: 12px;
+  }
+  .product-desc{
+    font-size: 14px;
+    line-height: 1.6;
+  }
+  /* For card footer */
+  .form-group{
+    margin-bottom: 14px;
+  }
+  .form-label{
+    width: 100%;
+    display: block;
+    font-size: 14px;
+    font-weight: 300;
+    margin-bottom: 8px;
+  }
+  .custom-border-box{
+    width: 100%;
+    display: flex;
+    border: 1px solid black;
+  }
+  .option-btn{
+    flex: 1;
+    padding: 12px;
+    text-align: center;
+    font-size: 18px;
+    font-weight: 300;
+    cursor: pointer;
+    border-left: 1px solid black;
+    background: white;
+    transition:  all 0.2s;
+    font-weight: 500;
+  }
+  .option-btn:last-child{
+    border-right: none;
+  }
+  .option-btn.active{
+    font-weight: 600;
+  }
+  /* For Dropdown */
+  .custom-dropdown{
+    position: relative;
+    width: 100%;
+    border: 1px solid black;
+    background: white;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: 300;
+  }
+  .dropdown-trigger{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 48px;
+    background-color: white;
+    transition: background 0.2s;
+    padding-left: 10px;
+  }
+  .trigger-icon-box{
+    width: 48px;
+    height: 100%;
+    border-left: 1px solid black;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: white;
+  }
+  .custom-dropdown.is-open .dropdown-trigger{
+    background: #f4f4f5;
+  }
+  .dropdown-options{
+    display: none;
+    position: absolute;
+    top: 100%;
+    left: -1px;
+    right: -1px;
+    background: white;
+    border: 1px solid black;
+    border-top: none;
+    z-index: 100;
+    max-height: 200px;
+    overflow-y: auto;
+  }
+  .selected-text{
+    font-size: 18px;
+    font-weight: 500;
+  }
+  .dropdown-options.is-open .dropdown-options{
+    display: block;
+  }
+  .dropdown-item{
+    padding: 12px;
+    text-align: center;
+    cursor: pointer;
+  }
+  .dropdown-item:hover{
+    background: #f4f4f5;
+    font-weight: 500;
+  }
+  .atc-btn{
+    background-color: rgb(20, 20, 20);
+    color: white;
+    width: 100%;
+    padding: 15px;
+    margin-top: 62px;
+    border: none;
+    font-size: 14px;
+    font-weight: bold;
+    cursor: pointer;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  /* .btn-text{
+    margin-right: 100px;
+  } */
+  /* Responsive */
+  @media screen and (max-width: 768px) {
+    .wild-heading {
+      text-align: center;
+      font-size: 32px;
+    }
+    .wild-grid {
+      gap: 4px;
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+</style>
+
+{% comment %} Functionf for modal {% endcomment %}
+<script>
+  function toggleModal(modalId) {
+    var modal = document.getElementById(modalId);
+    if (modal) {
+      modal.classList.toggle('active');
+      console.log('working on dialog');
+    }
+  }
+</script>
+
+{% comment %}
+  What to fix when continue
+  -  make sure the dialog is for each product
+{% endcomment %}
