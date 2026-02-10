@@ -5,7 +5,12 @@
     {
       "type": "image_picker",
       "id": "bg_image",
-      "label": "Background Image"
+      "label": "Top Background Image"
+    },
+    {
+      "type": "image_picker",
+      "id": "bg_image_2",
+      "label": "Bottom Background Image"
     },
     {
       "type": "text",
@@ -23,7 +28,7 @@
       "type": "text",
       "id": "btn_text",
       "label": "Top Button Text",
-      "default": "CHOOSE GIFT &rarr;"
+      "default": "CHOOSE GIFT"
     },
     {
       "type": "text",
@@ -41,7 +46,7 @@
       "type": "text",
       "id": "shop_btn_text",
       "label": "Shop Button",
-      "default": "SHOP NOW &rarr;"
+      "default": "SHOP NOW"
     },
     {
       "type": "text",
@@ -58,9 +63,15 @@
 }
 {% endschema %}
 
-<div class="hero-wrapper" style="background-image: url('{{ section.settings.bg_image | image_url }}');">
-    
-    {% comment %} Top bar {% endcomment %}
+<div class="hero-wrapper">
+  <div class="bg-layer">
+    <div class="bg-img top-img" style="background-image: url('{{ section.settings.bg_image | image_url }}');"></div>
+    <div
+      class="bg-img bottom-img"
+      style="background-image: url('{{ section.settings.bg_image_2 | image_url }}');"
+    ></div>
+  </div>
+
   <div class="hero-top-bar">
     <div class="hero-box hamburger" onclick="toggleMenu()">☰</div>
 
@@ -73,6 +84,9 @@
     </div>
     <button class="hero-top-btn desktop-only">
       {{ section.settings.btn_text }}
+      <svg width="27" height="12" viewBox="0 0 27 12" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M0.75 4.77298C0.335786 4.77298 -3.62117e-08 5.10877 0 5.52298C3.62117e-08 5.93719 0.335786 6.27298 0.75 6.27298L0.75 4.77298ZM26.2803 6.05331C26.5732 5.76041 26.5732 5.28554 26.2803 4.99265L21.5074 0.219677C21.2145 -0.0732163 20.7396 -0.0732163 20.4467 0.219677C20.1538 0.512571 20.1538 0.987444 20.4467 1.28034L24.6893 5.52298L20.4467 9.76562C20.1538 10.0585 20.1538 10.5334 20.4467 10.8263C20.7396 11.1192 21.2145 11.1192 21.5074 10.8263L26.2803 6.05331ZM0.75 6.27298L25.75 6.27298L25.75 4.77298L0.75 4.77298L0.75 6.27298Z" fill="#000"/>
+      </svg>
     </button>
 
     <div id="mobile-menu" class="mobile-drawer">
@@ -81,6 +95,9 @@
       </div>
       <button class="hero-top-btn">
         {{ section.settings.btn_text }}
+        <svg width="27" height="12" viewBox="0 0 27 12" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M0.75 4.77298C0.335786 4.77298 -3.62117e-08 5.10877 0 5.52298C3.62117e-08 5.93719 0.335786 6.27298 0.75 6.27298L0.75 4.77298ZM26.2803 6.05331C26.5732 5.76041 26.5732 5.28554 26.2803 4.99265L21.5074 0.219677C21.2145 -0.0732163 20.7396 -0.0732163 20.4467 0.219677C20.1538 0.512571 20.1538 0.987444 20.4467 1.28034L24.6893 5.52298L20.4467 9.76562C20.1538 10.0585 20.1538 10.5334 20.4467 10.8263C20.7396 11.1192 21.2145 11.1192 21.5074 10.8263L26.2803 6.05331ZM0.75 6.27298L25.75 6.27298L25.75 4.77298L0.75 4.77298L0.75 6.27298Z" fill="#000"/>
+        </svg>
       </button>
     </div>
   </div>
@@ -92,7 +109,12 @@
       <p>{{ section.settings.description }}</p>
     </div>
 
-    <button class="hero-shop-btn">{{ section.settings.shop_btn_text }}</button>
+    <button class="hero-shop-btn">
+      {{ section.settings.shop_btn_text }}
+      <svg width="27" height="12" viewBox="0 0 27 12" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M0.75 4.77298C0.335786 4.77298 -3.62117e-08 5.10877 0 5.52298C3.62117e-08 5.93719 0.335786 6.27298 0.75 6.27298L0.75 4.77298ZM26.2803 6.05331C26.5732 5.76041 26.5732 5.28554 26.2803 4.99265L21.5074 0.219677C21.2145 -0.0732163 20.7396 -0.0732163 20.4467 0.219677C20.1538 0.512571 20.1538 0.987444 20.4467 1.28034L24.6893 5.52298L20.4467 9.76562C20.1538 10.0585 20.1538 10.5334 20.4467 10.8263C20.7396 11.1192 21.2145 11.1192 21.5074 10.8263L26.2803 6.05331ZM0.75 6.27298L25.75 6.27298L25.75 4.77298L0.75 4.77298L0.75 6.27298Z" fill="#ffff"/>
+      </svg>
+    </button>
   </div>
 
   <div class="hero-bottom-bar">
@@ -101,17 +123,44 @@
 </div>
 
 <style>
-    .hero-wrapper {
+  .hero-wrapper {
     position: relative;
     width: 100%;
     min-height: 100vh;
-    background-size: cover;
-    background-position: center;
-    background-repeat: no-repeat;
     display: flex;
     flex-direction: column;
     justify-content: space-between;
     font-family: sans-serif;
+    overflow: hidden;
+  }
+
+  .bg-layer {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: -1;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .bg-img {
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+  }
+
+  .top-img {
+    width: 100%;
+    height: 50%;
+  }
+
+  .bottom-img {
+    width: 60%;
+    height: 50%;
+    margin-left: auto;
+    background-position: left center;
   }
 
   .hero-top-bar {
@@ -125,25 +174,36 @@
   }
 
   .hero-box {
-    text-transform: uppercase;
-    font-size: 30px;
+    font-size: 22px;
     letter-spacing: 1px;
     color: black;
     font-weight: bold;
     padding: 10px;
   }
-  .hero-box.hero-center-text{
-    font-size: 14px;
-    font-weight: normal;
+  .hero-box.hero-center-text {
+    font-size: 16px;
+    font-weight: 400;
   }
 
   .hero-top-btn {
-    background-color: #ffeb3b;
+    font-size: 16px;
+    font-weight: 400;
+    background-color: #fff544;
     cursor: pointer;
-    padding: 15px 35px;
+    padding: 15px 30px;
     font-weight: bold;
     text-transform: uppercase;
-    border:none;
+    border: none;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 24px;
+    position: relative;
+  }
+  .hero-top-btn:hover {
+    background-color: #fff644b4;
+    color: rgba(0, 0, 0, 0.692);
+    transition: 0.3s;
   }
 
   .hamburger {
@@ -161,19 +221,18 @@
   .hero-content {
     padding: 0 5%;
     max-width: 100%;
-    margin-top: 300px;
+    margin-top: 450px;
     margin-bottom: auto;
+    text-align: left;
   }
 
   .hero-title {
-    font-size: 4rem;
-    font-weight: 900;
+    font-size: 70px;
+    font-weight: 500;
     color: black;
-    display: inline-block;
     padding: 5px 15px 5px 0;
     margin-bottom: 20px;
-    line-height: 1;
-    white-space: nowrap;
+    font-family: Jost, serif;
   }
 
   .hero-desc-box {
@@ -186,19 +245,27 @@
   }
 
   .hero-shop-btn {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 24px;
     background-color: black;
     color: white;
     border: none;
     padding: 15px 40px;
-    font-size: 1rem;
+    font-size: 16px;
+    font-weight: 400;
     text-transform: uppercase;
     cursor: pointer;
     font-weight: bold;
   }
+  .hero-shop-btn:hover {
+    background-color: rgb(37, 37, 37);
+    transition: 0.3s;
+  }
 
-  /* 4. BOTTOM BAR */
   .hero-bottom-bar {
-    background-color: white;
+    background-color: #f5f5f5;
     text-align: center;
     padding: 15px;
     text-transform: uppercase;
@@ -206,17 +273,37 @@
     width: 100%;
     font-weight: bold;
     letter-spacing: 1px;
+    position: relative;
+    z-index: 2;
   }
 
   @media screen and (max-width: 768px) {
+    .bg-layer {
+      justify-content: flex-end;
+    }
+
+    .top-img {
+      display: none;
+    }
+
+    .bottom-img {
+      width: 100%;
+      height: 50vh;
+      margin-left: 0;
+      background-position: center bottom;
+      margin-bottom: 45px;
+      background-size: contain;
+      object-fit: cover;
+    }
+
     .hero-top-bar {
       position: relative;
       flex-wrap: wrap;
       padding: 10px;
       box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
     }
-    .hero-top-btn{
-        margin-top: 10px;
+    .hero-top-btn {
+      margin-top: 10px;
     }
     .desktop-only {
       display: none !important;
@@ -227,7 +314,6 @@
       order: 1;
     }
 
-    /* Logo Center */
     .hero-box-logo {
       order: 2;
       flex-grow: 1;
@@ -247,25 +333,37 @@
       top: 0;
       left: 0;
       align-items: center;
+      z-index: 99;
     }
 
     .mobile-drawer.open {
       display: flex;
-      top: 75px;
+      top: 68px;
     }
 
     .hero-content {
       text-align: center;
-      margin-top: 100px;
+      margin-top: 50px;
       display: flex;
       flex-direction: column;
       align-items: center;
+      position: relative;
+      z-index: 2;
+      padding: 0 20px;
+      width: 100%;
+      box-sizing: border-box;
     }
 
     .hero-title {
       font-size: 2.5rem;
       white-space: normal;
       text-align: center;
+    }
+
+    .hero-desc-box {
+      background: transparent;
+      padding: 0;
+      margin-bottom: 200px;
     }
   }
 </style>

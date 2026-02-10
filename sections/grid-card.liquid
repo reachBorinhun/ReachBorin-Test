@@ -118,21 +118,31 @@
                   <div class="form-group">
                     <label class="form-label">Color</label>
                     <div class="custom-border-box flex-row" id="color-group-{{ block.id }}">
+                      {% comment %} Logic for detect white color {% endcomment %}
+
                       {% for value in color_option.values %}
-                        
-                        {% assign border_color = value %}
-                        {% if value == 'White' %}
-                          {% assign border_color = '#e5e5e5' %} 
+                        {% assign is_white = false %}
+                        {% if value == 'White' or value == 'White' %}
+                          {% assign is_white = true %}
                         {% endif %}
 
-                        <div class="option-btn {% if forloop.first %}active{% endif %}" 
-                             onclick="selectColor(this)"
-                             style="border-left: 5px solid {{ border_color }};">
+                        <div
+                          class="option-btn {% if forloop.first %}active{% endif %} {% if is_white %}is_white{% endif %}"
+                          onclick="selectColor(this)"
+                          {% unless is_white %}
+                            style="border-left: 5px solid {{ value }};"
+                          {% endunless %}
+                        >
                           {{ value }}
                         </div>
                       {% endfor %}
                     </div>
-                    <input type="hidden" name="options[Color]" class="hidden-color-input" value="{{ color_option.selected_value }}">
+                    <input
+                      type="hidden"
+                      name="options[Color]"
+                      class="hidden-color-input"
+                      value="{{ color_option.selected_value }}"
+                    >
                   </div>
                 {% endif %}
 
@@ -141,11 +151,17 @@
                   <div class="form-group">
                     <label class="form-label">Size</label>
                     <div class="custom-dropdown" id="dropdown-{{ block.id }}">
-                      
                       <div class="dropdown-trigger" onclick="toggleDropdown('dropdown-{{ block.id }}')">
                         <span class="selected-text">Choose your size</span>
                         <div class="trigger-icon-box">
-                          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                          <svg
+                            width="20"
+                            height="20"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="currentColor"
+                            stroke-width="1.5"
+                          >
                             <path d="M6 9L12 15L18 9" stroke-linecap="square" stroke-linejoin="round"/>
                           </svg>
                         </div>
@@ -170,11 +186,10 @@
 
                 <button class="atc-btn" type="submit">
                   <span class="btn-text">ADD TO CART</span>
-                  <svg width="32" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
-                    <path d="M5 12H19M19 12L12 5M19 12L12 19" stroke-linecap="square" stroke-linejoin="round"/>
+                  <svg width="27" height="12" viewBox="0 0 27 12" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M0.75 4.77298C0.335786 4.77298 -3.62117e-08 5.10877 0 5.52298C3.62117e-08 5.93719 0.335786 6.27298 0.75 6.27298L0.75 4.77298ZM26.2803 6.05331C26.5732 5.76041 26.5732 5.28554 26.2803 4.99265L21.5074 0.219677C21.2145 -0.0732163 20.7396 -0.0732163 20.4467 0.219677C20.1538 0.512571 20.1538 0.987444 20.4467 1.28034L24.6893 5.52298L20.4467 9.76562C20.1538 10.0585 20.1538 10.5334 20.4467 10.8263C20.7396 11.1192 21.2145 11.1192 21.5074 10.8263L26.2803 6.05331ZM0.75 6.27298L25.75 6.27298L25.75 4.77298L0.75 4.77298L0.75 6.27298Z" fill="#ffff"/>
                   </svg>
                 </button>
-
               {% endform %}
             {% endif %}
           </div>
@@ -197,6 +212,7 @@
     font-weight: 400;
     margin-bottom: 30px;
     color: black;
+    font-family: Lustria, serif;
   }
 
   /* Grid System */
@@ -264,8 +280,10 @@
     height: 630px;
     position: relative;
     box-shadow: rgba(149, 157, 165, 0.2) 0px 8px 24px;
+    font-family: Jost, sans-serif;
+    box-sizing: border-box;
   }
-    .close-icon {
+  .close-icon {
     position: absolute;
     top: 10px;
     left: 88%;
@@ -273,80 +291,93 @@
     cursor: pointer;
   }
   /* For card */
-  .card-header{
+  .card-header {
     display: flex;
     gap: 12px;
     margin-bottom: 26px;
     padding-top: 32px;
   }
-  .header-img-container{
+  .header-img-container {
     width: 45%;
     aspect-ratio: 1/1;
     overflow: hidden;
   }
-  .header-img{
+  .header-img {
     width: 100%;
     height: 100%;
     object-fit: cover;
   }
-  .header-info{
+  .header-info {
     width: 55%;
     display: flex;
     flex-direction: column;
     justify-content: flex-start;
-    padding-top: 20px;
+    padding-top: 16px;
   }
-  .product-title{
-    font-size: 20px;
+  .product-title {
+    font-family: Jost, sans-serif;
+    font-size: 24px;
     font-weight: 300;
-    margin-top: 10px;
-    margin-bottom: 16px;
+    margin: 0;
   }
-  .product-price{
-    font-size: 20px;
+  .product-price {
+    font-size: 24px;
     font-weight: bold;
     margin-bottom: 12px;
+    font-family: Lustria, sans-serif;
   }
-  .product-desc{
+  .product-desc {
     font-size: 14px;
-    line-height: 1.6;
+    line-height: 1.5;
+    font-family: Jost, serif;
   }
   /* For card footer */
-  .form-group{
+  .form-group {
     margin-bottom: 14px;
   }
-  .form-label{
+  .form-label {
     width: 100%;
     display: block;
     font-size: 14px;
-    font-weight: 300;
+    font-weight: 400;
     margin-bottom: 8px;
+    color: #333333;
   }
-  .custom-border-box{
+  .custom-border-box {
     width: 100%;
     display: flex;
     border: 1px solid black;
   }
-  .option-btn{
+  .option-btn {
     flex: 1;
     padding: 12px;
-    text-align: center;
     font-size: 18px;
-    font-weight: 300;
+    font-weight: 400;
     cursor: pointer;
-    border-left: 1px solid black;
+    border-left: 5px solid black;
     background: white;
-    transition:  all 0.2s;
+    transition: all 0.2s;
+    position: relative;
+  }
+  .option-btn.is_white::before {
+    content: '';
+    position: absolute;
+    left: -5px;
+    top: 0;
+    bottom: 0;
+    width: 5px;
+    background-color: white;
+    border-left: 1px solid black;
+    border-right: 1px solid black;
+    z-index: 999;
+  }
+  .option-btn.active {
     font-weight: 500;
-  }
-  .option-btn:last-child{
-    border-right: none;
-  }
-  .option-btn.active{
-    font-weight: 600;
+    background-color: black;
+    color: white;
   }
   /* For Dropdown */
-  .custom-dropdown{
+  .custom-dropdown {
     position: relative;
     width: 100%;
     border: 1px solid black;
@@ -355,7 +386,7 @@
     font-size: 14px;
     font-weight: 300;
   }
-  .dropdown-trigger{
+  .dropdown-trigger {
     display: flex;
     align-items: center;
     justify-content: space-between;
@@ -364,7 +395,7 @@
     transition: background 0.2s;
     padding-left: 10px;
   }
-  .trigger-icon-box{
+  .trigger-icon-box {
     width: 48px;
     height: 100%;
     border-left: 1px solid black;
@@ -373,10 +404,10 @@
     justify-content: center;
     background: white;
   }
-  .custom-dropdown.is-open .dropdown-trigger{
+  .custom-dropdown.is-open .dropdown-trigger {
     background: #f4f4f5;
   }
-  .dropdown-options{
+  .dropdown-options {
     display: none;
     position: absolute;
     top: 100%;
@@ -384,32 +415,34 @@
     right: -1px;
     background: white;
     border: 1px solid black;
-    border-top: none;
     z-index: 100;
     max-height: 200px;
     overflow-y: auto;
   }
-  .selected-text{
-    font-size: 18px;
-    font-weight: 500;
+  .selected-text {
+    font-size: 16px;
+    font-weight: 400;
+    flex-grow: 1;
+    text-align: left;
+    padding: 15px;
   }
-  .dropdown-options.is-open .dropdown-options{
+  .custom-dropdown.is-open .dropdown-options {
     display: block;
   }
-  .dropdown-item{
+  .dropdown-item {
     padding: 12px;
     text-align: center;
     cursor: pointer;
   }
-  .dropdown-item:hover{
+  .dropdown-item:hover {
     background: #f4f4f5;
     font-weight: 500;
   }
-  .atc-btn{
+  .atc-btn {
     background-color: rgb(20, 20, 20);
     color: white;
     width: 100%;
-    padding: 15px;
+    padding: 20px;
     margin-top: 62px;
     border: none;
     font-size: 14px;
@@ -418,10 +451,16 @@
     display: flex;
     justify-content: center;
     align-items: center;
+    position: relative;
   }
-  /* .btn-text{
-    margin-right: 100px;
-  } */
+  .atc-btn svg {
+    position: absolute;
+    right: 20px;
+  }
+  .btn-text{
+    font-weight: 400;
+    font-size: 16px;
+  }
   /* Responsive */
   @media screen and (max-width: 768px) {
     .wild-heading {
@@ -444,9 +483,46 @@
       console.log('working on dialog');
     }
   }
+  function selectColor(btn) {
+    var group = btn.parentElement;
+    var buttons = group.getElementsByClassName('option-btn');
+    for (var i = 0; i < buttons.length; i++) {
+      buttons[i].classList.remove('active');
+    }
+    btn.classList.add('active');
+
+    var container = group.parentElement;
+    var input = container.querySelector('.hidden-color-input');
+    if (input) input.value = btn.innerText.trim();
+  }
+  // For drop down
+  function toggleDropdown(dropdownId) {
+    var dropdown = document.getElementById(dropdownId);
+    if (dropdown) dropdown.classList.toggle('is-open');
+  }
+  // For size select
+  function selectSize(dropdownId, value) {
+    var dropdown = document.getElementById(dropdownId);
+
+    var textElement = dropdown.querySelector('.selected-text');
+    if (textElement) {
+      textElement.textContent = value;
+      textElement.style.textAlign = 'center';
+    }
+
+    var hiddenSelect = dropdown.querySelector('.hidden-real-select');
+    if (hiddenSelect) hiddenSelect.value = value;
+
+    dropdown.classList.remove('is-open');
+  }
+  document.addEventListener('click', function (e) {
+    if (!e.target.closest('.custom-dropdown') && !e.target.closest('.plus-icon')) {
+      document.querySelectorAll('.custom-dropdown.is-open').forEach((d) => d.classList.remove('is-open'));
+    }
+  });
 </script>
 
 {% comment %}
   What to fix when continue
-  -  make sure the dialog is for each product
+  -  check responsive
 {% endcomment %}
