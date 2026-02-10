@@ -170,8 +170,8 @@
 
                 <button class="atc-btn" type="submit">
                   <span class="btn-text">ADD TO CART</span>
-                  <svg width="32" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
-                    <path d="M5 12H19M19 12L12 5M19 12L12 19" stroke-linecap="square" stroke-linejoin="round"/>
+                  <svg width="40" height="24" viewBox="0 0 40 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                    <path d="M5 12H19M19 12L12 5M19 12L12 19" stroke-linecap="square" stroke-linejoin="miter"/>
                   </svg>
                 </button>
 
@@ -338,9 +338,16 @@
     background: white;
     transition:  all 0.2s;
     font-weight: 500;
+    position: relative;
   }
-  .option-btn:last-child{
-    border-right: none;
+  .option-btn::before{
+    content: "";
+    width: 5px;
+    position: absolute;
+    background-color: red;
+    left: 0;
+    top: 0;
+    height: 100%;
   }
   .option-btn.active{
     font-weight: 600;
@@ -384,7 +391,6 @@
     right: -1px;
     background: white;
     border: 1px solid black;
-    border-top: none;
     z-index: 100;
     max-height: 200px;
     overflow-y: auto;
@@ -393,7 +399,7 @@
     font-size: 18px;
     font-weight: 500;
   }
-  .dropdown-options.is-open .dropdown-options{
+  .custom-dropdown.is-open .dropdown-options{
     display: block;
   }
   .dropdown-item{
@@ -409,7 +415,7 @@
     background-color: rgb(20, 20, 20);
     color: white;
     width: 100%;
-    padding: 15px;
+    padding: 20px;
     margin-top: 62px;
     border: none;
     font-size: 14px;
@@ -418,6 +424,11 @@
     display: flex;
     justify-content: center;
     align-items: center;
+    position: relative;
+  }
+  .atc-btn svg{
+    position: absolute;
+    right: 20px;
   }
   /* .btn-text{
     margin-right: 100px;
@@ -444,9 +455,43 @@
       console.log('working on dialog');
     }
   }
+  function selectColor(btn){
+    var group = btn.parentElement;
+    var buttons = group.getElementsByClassName('option-btn');
+    for(var i = 0; i < buttons.length; i++){
+      buttons[i].classList.remove('active');
+    }
+    btn.classList.add('active');
+
+    var container = group.parentElement;
+    var input = container.querySelector('.hidden-color-input');
+    if(input) input.value = btn.innerText.trim();
+  }
+  // For drop down
+  function toggleDropdown (dropdownId){
+    var dropdown = document.getElementById(dropdownId);
+    if (dropdown) dropdown.classList.toggle('is-open');
+  }
+  // For size select
+  function selectSize(dropdownId, value){
+    var dropdown = document.getElementById('dropdownId');
+
+    var textElement = dropdown.querySelector('.selected-text');
+    if(textElement) textElement.textContent = value;
+
+    var hiddenSelect = dropdown.querySelector(.hidden-real-select);
+    if(hiddenSelect) hiddenSelect.value = value;
+
+    dropdown.classList.remove('is-open');
+  }
+  document.addEventListener('click', function(e){
+    if(!e.target.closest('.custom-dropdown') && !e.target.closest('.plus-icon')){
+      document.querySelectorAll('custom-dropdown.is-open').forEach(d => d.classList.remove('is-open'));
+    }
+  })
 </script>
 
 {% comment %}
   What to fix when continue
-  -  make sure the dialog is for each product
+  -  check responsive
 {% endcomment %}
