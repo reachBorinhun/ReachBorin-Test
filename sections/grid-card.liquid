@@ -65,8 +65,6 @@
 }
 {% endschema %}
 
-{% comment %} Bloock code {% endcomment %}
-
 <div class="wild-section">
   <h2 class="wild-heading">
     {{ section.settings.heading }}
@@ -91,7 +89,6 @@
           </svg>
         </button>
 
-        {% comment %} For modal {% endcomment %}
         <div id="modal-{{ block.id }}" class="modal-overlay">
           <div class="modal-card">
             <span class="close-icon" onclick="toggleModal('modal-{{ block.id }}')">&times;</span>
@@ -110,7 +107,8 @@
                   </div>
                 </div>
               </div>
-              {% form 'product', product %}
+              
+              {% form 'product', product, class: 'product-form-custom' %}
                 <input type="hidden" name="id" value="{{ product.selected_or_first_available_variant.id }}">
 
                 {% assign color_option = product.options_with_values | where: 'name', 'Color' | first %}
@@ -118,8 +116,6 @@
                   <div class="form-group">
                     <label class="form-label">Color</label>
                     <div class="custom-border-box flex-row" id="color-group-{{ block.id }}">
-                      {% comment %} Logic for detect white color {% endcomment %}
-
                       {% for value in color_option.values %}
                         {% assign is_white = false %}
                         {% if value == 'White' or value == 'White' %}
@@ -199,30 +195,27 @@
   </div>
 </div>
 
-{% comment %} Style {% endcomment %}
-
 <style>
   .wild-section {
     max-width: 1337px;
     padding: 60px 20px;
     margin: 0 auto;
+    font-family: 'Jost', sans-serif;
   }
   .wild-heading {
     font-size: 36px;
     font-weight: 400;
     margin-bottom: 30px;
     color: black;
-    font-family: Lustria, serif;
+    font-family: 'Lustria', serif;
   }
 
-  /* Grid System */
   .wild-grid {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
     gap: 20px;
   }
 
-  /* for card*/
   .wild-card {
     position: relative;
     width: 100%;
@@ -237,7 +230,6 @@
     display: block;
   }
 
-  /* For plus button */
   .plus-btn {
     position: absolute;
     width: 22px;
@@ -256,7 +248,7 @@
     height: 8.46px;
     fill: black;
   }
-  /* For modal product */
+
   .modal-overlay {
     display: none;
     position: fixed;
@@ -280,7 +272,7 @@
     height: 630px;
     position: relative;
     box-shadow: rgba(149, 157, 165, 0.2) 0px 8px 24px;
-    font-family: Jost, sans-serif;
+    font-family: 'Jost', sans-serif;
     box-sizing: border-box;
   }
   .close-icon {
@@ -290,7 +282,7 @@
     font-size: 28px;
     cursor: pointer;
   }
-  /* For card */
+
   .card-header {
     display: flex;
     gap: 12px;
@@ -315,7 +307,7 @@
     padding-top: 16px;
   }
   .product-title {
-    font-family: Jost, sans-serif;
+    font-family: 'Lustria', serif;
     font-size: 24px;
     font-weight: 300;
     margin: 0;
@@ -324,14 +316,14 @@
     font-size: 24px;
     font-weight: bold;
     margin-bottom: 12px;
-    font-family: Lustria, sans-serif;
+    font-family: 'Lustria', serif;
   }
   .product-desc {
     font-size: 14px;
     line-height: 1.5;
-    font-family: Jost, serif;
+    font-family: 'Jost', sans-serif;
   }
-  /* For card footer */
+
   .form-group {
     margin-bottom: 14px;
   }
@@ -342,6 +334,7 @@
     font-weight: 400;
     margin-bottom: 8px;
     color: #333333;
+    font-family: 'Jost', sans-serif;
   }
   .custom-border-box {
     width: 100%;
@@ -358,6 +351,7 @@
     background: white;
     transition: all 0.2s;
     position: relative;
+    font-family: 'Jost', sans-serif;
   }
   .option-btn.is_white::before {
     content: '';
@@ -376,7 +370,7 @@
     background-color: black;
     color: white;
   }
-  /* For Dropdown */
+
   .custom-dropdown {
     position: relative;
     width: 100%;
@@ -452,6 +446,7 @@
     justify-content: center;
     align-items: center;
     position: relative;
+    font-family: 'Jost', sans-serif;
   }
   .atc-btn svg {
     position: absolute;
@@ -461,7 +456,6 @@
     font-weight: 400;
     font-size: 16px;
   }
-  /* Responsive */
   @media screen and (max-width: 768px) {
     .wild-heading {
       text-align: center;
@@ -474,55 +468,90 @@
   }
 </style>
 
-{% comment %} Functionf for modal {% endcomment %}
 <script>
   function toggleModal(modalId) {
     var modal = document.getElementById(modalId);
     if (modal) {
       modal.classList.toggle('active');
-      console.log('working on dialog');
     }
   }
-  function selectColor(btn) {
+
+  function selectColor(btn){
     var group = btn.parentElement;
     var buttons = group.getElementsByClassName('option-btn');
-    for (var i = 0; i < buttons.length; i++) {
+    for(var i = 0; i < buttons.length; i++){
       buttons[i].classList.remove('active');
     }
     btn.classList.add('active');
 
     var container = group.parentElement;
     var input = container.querySelector('.hidden-color-input');
-    if (input) input.value = btn.innerText.trim();
+    if(input) input.value = btn.innerText.trim();
   }
-  // For drop down
-  function toggleDropdown(dropdownId) {
+
+  function toggleDropdown (dropdownId){
     var dropdown = document.getElementById(dropdownId);
     if (dropdown) dropdown.classList.toggle('is-open');
   }
-  // For size select
-  function selectSize(dropdownId, value) {
-    var dropdown = document.getElementById(dropdownId);
 
+  function selectSize(dropdownId, value){
+    var dropdown = document.getElementById(dropdownId);
     var textElement = dropdown.querySelector('.selected-text');
-    if (textElement) {
+    if(textElement) {
       textElement.textContent = value;
       textElement.style.textAlign = 'center';
     }
 
     var hiddenSelect = dropdown.querySelector('.hidden-real-select');
-    if (hiddenSelect) hiddenSelect.value = value;
+    if(hiddenSelect) hiddenSelect.value = value;
 
     dropdown.classList.remove('is-open');
   }
-  document.addEventListener('click', function (e) {
-    if (!e.target.closest('.custom-dropdown') && !e.target.closest('.plus-icon')) {
-      document.querySelectorAll('.custom-dropdown.is-open').forEach((d) => d.classList.remove('is-open'));
+
+  document.addEventListener('click', function(e){
+    if(!e.target.closest('.custom-dropdown') && !e.target.closest('.plus-btn')){
+      document.querySelectorAll('.custom-dropdown.is-open').forEach(d => d.classList.remove('is-open'));
     }
   });
-</script>
 
-{% comment %}
-  What to fix when continue
-  -  check responsive
-{% endcomment %}
+  document.addEventListener('DOMContentLoaded', function() {
+    var forms = document.querySelectorAll('.product-form-custom');
+
+    forms.forEach(function(form) {
+      form.addEventListener('submit', function(e) {
+        
+        var colorInput = form.querySelector('input[name="options[Color]"]');
+        var sizeInput = form.querySelector('select[name="options[Size]"]');
+        
+        var color = colorInput ? colorInput.value : '';
+        var size = sizeInput ? sizeInput.value : '';
+
+        if (color === 'Black' && size === 'Medium') {
+          e.preventDefault(); 
+          
+          var jacketVariantId = 42900196425818; 
+
+          var formData = {
+           'items': [{
+             'id': jacketVariantId,
+             'quantity': 1
+           }]
+          };
+
+          fetch(window.Shopify.routes.root + 'cart/add.js', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(formData)
+          })
+          .then(response => {
+            form.submit();
+          })
+          .catch((error) => {
+            console.error('Error:', error);
+            form.submit();
+          });
+        }
+      });
+    });
+  });
+</script>
